@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>SSS Study Notes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1d2b3a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: sticky header with note tabs; on wide screens a section index rail beside a reading column; on phones the index becomes a jump menu and wide HIRARC tables become cards. */
+:root{
+  --bg:#f5f6f4; --surface:#ffffff; --fg:#1b2530; --muted:#5b6774; --line:#d9dedf;
+  --accent:#1f5f8b; --accent-ink:#ffffff; --hi:#e2a400; --head:#1d2b3a; --head-fg:#f1f4f6;
+  --hRisk:#c0392b; --mRisk:#b7791f; --lRisk:#2f855a; --chip-bg:rgba(0,0,0,.05);
+  --display:"Barlow Semi Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --mono:"IBM Plex Mono",Consolas,"Courier New",monospace;
+  --fs:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11171d; --surface:#18212a; --fg:#e4e9ee; --muted:#9aa7b4; --line:#2c3844;
+  --accent:#6fb0dd; --accent-ink:#0d1620; --hi:#f0b429; --head:#0b1117; --head-fg:#e4e9ee;
+  --hRisk:#f07167; --mRisk:#e9b44c; --lRisk:#5fbf8a; --chip-bg:rgba(255,255,255,.07); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11171d; --surface:#18212a; --fg:#e4e9ee; --muted:#9aa7b4; --line:#2c3844;
+  --accent:#6fb0dd; --accent-ink:#0d1620; --hi:#f0b429; --head:#0b1117; --head-fg:#e4e9ee;
+  --hRisk:#f07167; --mRisk:#e9b44c; --lRisk:#5fbf8a; --chip-bg:rgba(255,255,255,.07); color-scheme:dark}
+
+html{font-size:var(--fs)}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:1rem;line-height:1.6}
+*{box-sizing:border-box}
+:focus-visible{outline:3px solid var(--hi);outline-offset:2px}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;background:var(--head);color:var(--head-fg);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px 0;
+  border-bottom:4px solid var(--hi)}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1320px;margin:0 auto}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1 1 0}
+.brand b{font-family:var(--display);font-size:1.45rem;letter-spacing:.02em;line-height:1.1}
+.brand span{font-size:.78rem;color:var(--head-fg);opacity:.75;letter-spacing:.04em;text-transform:uppercase}
+.tools{display:flex;gap:6px;align-items:center}
+.tbtn{font:600 .85rem var(--body);background:transparent;color:var(--head-fg);border:1px solid rgba(255,255,255,.35);
+  border-radius:6px;padding:7px 10px;cursor:pointer;min-height:38px;display:inline-flex;align-items:center;gap:6px}
+.tbtn:hover{border-color:var(--hi)}
+.tbtn svg{width:16px;height:16px}
+.tabs{display:flex;gap:2px;max-width:1320px;margin:10px auto 0;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font:700 1.02rem var(--display);letter-spacing:.03em;text-transform:uppercase;background:transparent;color:var(--head-fg);
+  opacity:.7;border:0;border-radius:6px 6px 0 0;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.tab[aria-selected="true"]{opacity:1;background:var(--hi);color:#1b1b1b}
+
+/* Body layout */
+.wrap{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:230px minmax(0,1fr);gap:32px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 64px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 120px);align-self:start;max-height:calc(100vh - 140px);overflow:auto}
+.rail h4{font:700 .78rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.rail a{display:block;color:var(--fg);text-decoration:none;font-size:.9rem;padding:6px 10px;border-left:3px solid var(--line);line-height:1.35}
+.rail a:hover{border-left-color:var(--accent);color:var(--accent)}
+.jump{display:none;margin-bottom:16px}
+.jump label{font:700 .75rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:4px}
+.jump select{width:100%;font:1rem var(--body);padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+
+article{min-width:0}
+article h1{font:700 2.2rem/1.1 var(--display);letter-spacing:.01em;margin:0 0 6px;text-wrap:balance}
+article h1 + p{color:var(--muted);margin-top:0}
+article h2{font:700 1.55rem/1.2 var(--display);letter-spacing:.01em;margin:2.2em 0 .5em;padding-top:.6em;border-top:1px solid var(--line);
+  text-wrap:balance;scroll-margin-top:140px}
+article h3{font:700 1.2rem var(--display);margin:1.6em 0 .4em;scroll-margin-top:140px}
+article p,article li{max-width:72ch}
+article a{color:var(--accent)}
+article strong{font-weight:600}
+article ul,article ol{padding-left:1.4em}
+article li{margin:.2em 0}
+article ol > li > ul{list-style:none;padding-left:0;margin:.3em 0 .6em}
+article ol > li > ul > li{background:var(--chip-bg);border-radius:6px;padding:6px 10px;font-size:.95rem}
+code{font-family:var(--mono)}
+
+/* Tables */
+.tbl{overflow-x:auto;margin:1em 0 1.4em;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:.92rem;font-variant-numeric:tabular-nums}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--line)}
+th{font:700 .8rem var(--body);letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--chip-bg);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td:first-child{font-weight:600}
+.wide table{min-width:1100px}
+.chip{display:inline-block;font:500 .82rem var(--mono);padding:2px 8px;border-radius:999px;white-space:nowrap;border:1.5px solid currentColor}
+.r-H{color:var(--hRisk)} .r-M{color:var(--mRisk)} .r-L{color:var(--lRisk)}
+
+/* Checklists */
+.task-list-item,li:has(> input[type=checkbox]){list-style:none;margin-left:-1.4em}
+input[type=checkbox]{width:20px;height:20px;vertical-align:-4px;margin-right:8px;accent-color:var(--accent)}
+
+/* Answer reveal */
+details.ans{margin:2.2em 0 0;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+details.ans > summary{cursor:pointer;list-style:none;padding:14px 16px;font:700 1.3rem var(--display);display:flex;justify-content:space-between;gap:12px;align-items:center}
+details.ans > summary::-webkit-details-marker{display:none}
+details.ans > summary::after{content:"Show";font:600 .8rem var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--accent-ink);background:var(--accent);padding:4px 10px;border-radius:999px}
+details.ans[open] > summary::after{content:"Hide"}
+details.ans > .ans-body{padding:0 16px 12px}
+details.ans h2{display:none}
+
+/* Focus mode (fallback when the browser blocks real full screen, e.g. iPhone) */
+.exitfocus{display:none;position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:20;
+  background:var(--head);color:var(--head-fg);border:2px solid var(--hi);border-radius:999px;padding:10px 16px;font:600 .9rem var(--body);cursor:pointer}
+body.focus .top{display:none}
+body.focus .rail{display:none}
+body.focus .wrap{grid-template-columns:minmax(0,1fr)}
+body.focus .exitfocus{display:block}
+
+@media (max-width:1000px){
+  .wrap{grid-template-columns:minmax(0,1fr);gap:0}
+  .rail{display:none}
+  .jump{display:block}
+}
+/* Phone: wide tables become one card per row */
+@media (max-width:760px){
+  .brand span{display:none}
+  .tbtn .lbl{display:none}
+  article h1{font-size:1.8rem}
+  .wide{border:0;background:transparent;overflow:visible}
+  .wide table{min-width:0}
+  .wide thead{display:none}
+  .wide table,.wide tbody,.wide tr,.wide td{display:block;width:100%}
+  .wide tr{background:var(--surface);border:1px solid var(--line);border-radius:10px;margin-bottom:12px;padding:6px 0}
+  .wide td{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:10px;border:0;padding:5px 12px}
+  .wide td::before{content:attr(data-label);font:700 .72rem var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:.2em}
+  .wide td > .chip{justify-self:start}
+  .wide td:first-child{font:700 1.05rem var(--display);border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:4px}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<header class="top">
+  <div class="bar">
+    <div class="brand"><b>SSS Study Notes</b><span>NIOSH Kuching · 23 Nov – 4 Dec 2026</span></div>
+    <div class="tools">
+      <button class="tbtn" id="smaller" type="button" aria-label="Smaller text">A−</button>
+      <button class="tbtn" id="bigger" type="button" aria-label="Larger text">A+</button>
+      <button class="tbtn" id="fs" type="button" aria-label="Full screen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <span class="lbl" id="fslbl">Full screen</span>
+      </button>
+    </div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Notes">
+    <button class="tab" role="tab" id="tab-law" data-note="law" type="button">Law</button>
+    <button class="tab" role="tab" id="tab-hirarc" data-note="hirarc" type="button">HIRARC</button>
+    <button class="tab" role="tab" id="tab-practice" data-note="practice" type="button">Practice</button>
+  </nav>
+</header>
+
+<div class="wrap">
+  <aside class="rail" aria-label="Sections"><h4>Sections</h4><nav id="rail"></nav></aside>
+  <main>
+    <div class="jump"><label for="jumpsel">Jump to section</label><select id="jumpsel"></select></div>
+    <article id="doc"><p>Loading notes…</p></article>
+  </main>
+</div>
+<button class="exitfocus" id="exitfocus" type="button">Exit full screen</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+<script id="notes-data" type="application/json">{"law": "# SSS Law Cheat Sheet\n\nNIOSH Site Safety Supervisor course, Kuching, 23 Nov – 4 Dec 2026 · 19 Oct 2026\n\n## The big picture: the law changed on 1 June 2024\n\nOn 1 June 2024 Malaysia changed its safety law: OSHA 1994 was amended and the Factories and Machinery Act 1967 was repealed. If your mental model of \"the law\" is from your early years on site, update it first.\n\n| What | Before 1 June 2024 | From 1 June 2024 |\n| --- | --- | --- |\n| OSHA 1994 (Act 514) | Covered listed industries only | Amended by Act A1648: covers **all places of work** (except armed forces and ships), with much higher penalties |\n| FMA 1967 (Act 139) | Machinery, factories, CFs, competent persons | **Repealed** by Act 835. CFs, registrations and competencies issued under FMA now \"dealt with under\" OSHA (Act 835 s.4) |\n| Plant/machinery approval | FMA certificate of fitness (CF) | OSHA plus new 2024 subsidiary legislation on plant requiring a CF |\n\n**How to use this sheet:** it's a revision map, not the law itself. Section numbers marked **(verify)** are from secondary sources or memory, so confirm them against the course notes. Memorise the bold items; skim the rest.\n\n## OSHA 1994 (Act 514), as amended 2022\n\nOSHA is the backbone of the exam. Most essay answers should cite at least one of these sections. **NEW** = added or expanded by the 2022 amendment.\n\n| Section | Topic | What to remember |\n| --- | --- | --- |\n| **s.15** | General duties of employers to employees | \"So far as is practicable\": safe plant and systems of work; safe use, handling, storage and transport of substances; information, instruction, training and supervision; safe workplace, access and exit; safe working environment and welfare |\n| **s.15(2)(f)** NEW | Emergency procedures | Employer/principal must develop and implement procedures for emergencies at work |\n| **s.16** | Safety and health policy | Written policy, revised as needed, brought to employees' attention (small employers exempted by regulation, verify the threshold) |\n| **s.17** | Duties to persons other than employees | Public, visitors, other contractors' workers |\n| **s.18** | Duties of occupiers | Safe premises, access and exit for non-employees |\n| **s.18A** NEW | Duties of principals | Principal (e.g. main contractor/client) responsible for safety and health of contractors and subcontractors working under their direction |\n| **s.18B** NEW | Risk assessment | Employer, self-employed person and principal must carry out risk assessment and implement the controls it shows are needed (this is the legal basis for HIRARC) |\n| **s.19** | Penalty for ss.15–18 | Now up to **RM500,000 and/or 2 years** (was RM50,000) (verify exact wording) |\n| s.20–23 | Designers, manufacturers, suppliers | Plant and substances safe when properly used; information supplied |\n| **s.24** | General duties of employees | Take reasonable care of self and others; cooperate with employer; **wear PPE provided**; comply with instructions |\n| s.25 | No interference or misuse | Must not tamper with safety equipment |\n| s.26 | No charge to employees | Employer cannot charge workers for anything provided for safety, e.g. PPE |\n| **s.26A** NEW | Right to remove oneself from imminent danger | Employee may leave work posing imminent danger, protected from victimisation (know the conditions) |\n| s.27 | No discrimination | Employer can't penalise an employee for raising safety complaints or committee work |\n| **s.29** | Safety and Health Officer (SHO) | Required for prescribed workplaces. See SHO Order in Regulations below |\n| **s.29A** NEW | OSH Coordinator | Employer with **5 or more employees** must appoint one (where no SHO is required, verify) |\n| **s.30–31** | Safety and Health Committee | Required with **40 or more** persons employed. s.31 = its functions |\n| **s.31A** NEW | Mandatory training | Employer must ensure specified employees attend OSH training |\n| **s.32** | Notification of accidents | Notify nearest DOSH office: accidents, dangerous occurrences, occupational poisoning and disease. See NADOPOD |\n| s.37 | Industry Codes of Practice | ICOPs approved by the Minister; breaching an ICOP is evidence in proceedings |\n| **s.48** | Improvement and prohibition notices | DOSH officer issues: **improvement** = fix by a deadline; **prohibition** = stop the activity now |\n| s.49 | Failure to comply with a notice | Offence; penalties increased in 2022 |\n| s.50 | Appeal | Against a notice (verify the appeal period) |\n| **s.52** | Offences by body corporate | Directors and officers personally liable unless they prove they took reasonable precautions |\n| s.66 | Regulations | Minister's power to make regulations, now including ergonomic and psychosocial conditions |\n\n**Exam angle:** know the **duty holders**: employer (s.15), principal (s.18A), occupier (s.18), designer/manufacturer/supplier (s.20–23), employee (s.24). Many questions boil down to \"who is responsible and under which section\".\n\n## BOWEC 1986 and plant/machinery\n\nBOWEC (Building Operations and Works of Engineering Construction (Safety) Regulations 1986) is the construction-specific rulebook, and **the SSS role comes from it**. It was made under the now-repealed FMA. Ask on Day 1 how NIOSH treats its current status. Expect it to be taught and examined either way.\n\n| Topic | Key points to remember |\n| --- | --- |\n| **Safety supervisor** | Contractor employing **more than 20 workers** must appoint a safety supervisor (reg. 25, verify) who promotes safe conduct of work on site. This is your future role. |\n| Designated person | Competent person appointed to inspect scaffolds, excavations, formwork and lifting gear, and to sign the inspection records |\n| **Scaffolds** | Scaffolds **over 40 m high designed by a Professional Engineer** (verify). Inspected by designated person **weekly and after bad weather** (verify). Guardrails, toe boards, sound base plates, ties. Tag system: green = safe, red = do not use. |\n| **Excavation** | Deeper than about **1.5 m**: shoring, battering or other support (verify). Barricade the edges. Keep spoil and plant back from the edge. Safe access/egress. Check for underground services first. |\n| Formwork and falsework | Designed and erected to drawings, inspected before concreting, struck only when the concrete has enough strength |\n| Floor openings and edges | Covered or guarded with guardrails. Covers secured and marked. |\n| **Lifting** | Crane must have a valid **certificate of fitness (CF)**. **SWL** marked. Competent operator and signaller. Lifting plan for critical lifts. Lifting gear inspected and tagged. |\n| Demolition | Pre-demolition survey, method statement, competent supervision, services disconnected |\n| General site | Housekeeping, lighting, first aid, safety helmets and footwear, fire prevention, safe ladders and stairways |\n\n**Plant after the FMA repeal:** plant such as **cranes, passenger lifts, boilers and unfired pressure vessels** still need a CF, now issued under OSHA and its 2024 regulations. CFs and competency certificates issued under FMA carry over (Act 835 s.4). Ask in class for the current CF renewal cycle and the list of plant needing one.\n\n## Key regulations under OSHA\n\nThese come up again and again. Learn the **trigger number** for each one: who it applies to, and when.\n\n| Regulation | Trigger / key number | What to remember |\n| --- | --- | --- |\n| **OSH (Safety and Health Officer) Order 1997** + SHO Regs 1997 | Building operations with contract value **over RM20 million** need a full-time registered SHO | Below that, a site typically relies on the SSS role. JKR and CIDB contract conditions may require SSO/SSS. |\n| **OSH (Safety and Health Committee) Regs 1996** | **40 or more** persons employed (OSHA s.30) | Chair = employer or senior manager; secretary = SHO where there is one; employee reps not fewer than management reps (verify); **meet at least once every 3 months**; inspect the workplace and investigate accidents (verify) |\n| **NADOPOD 2004** (Notification of Accident, Dangerous Occurrence, Occupational Poisoning and Occupational Disease) | Death, serious bodily injury, or injury causing **more than 4 calendar days** off work | **Notify DOSH immediately** by the quickest means, then a written report (**JKKP 6**) within **7 days**. Occupational poisoning or disease = **JKKP 7** (verify the form roles). Keep records (verify how long). Submitted online now. |\n| **USECHH 2000** (Use and Standards of Exposure of Chemicals Hazardous to Health) | Any chemical hazardous to health | **CHRA** (chemical health risk assessment) by a registered assessor; chemical register; exposure monitoring; medical surveillance; long record retention (verify, about 30 years) |\n| **CLASS Regs 2013** | Supplying or using hazardous chemicals | **Safety Data Sheet (SDS)** and **GHS labels**. Know the pictograms. |\n| **OSH (Noise Exposure) Regs 2019** | Noisy work: piling, breaking, grinding, compressors | **Action level 82 dB(A)**, **exposure limit 85 dB(A)** (8-hour TWA), **peak 140 dB(C)** (verify). Noise risk assessment, hearing protection, audiometric testing. |\n\n## Other laws and guidelines\n\nThese are less likely to be essay questions, but citing them shows breadth.\n\n| Law / guideline | Why it matters on site |\n| --- | --- |\n| **CIDB Act 1994 (Act 520)** | Construction personnel registration: the **Green Card (CCD)** and its safety induction |\n| **CIDB OSHCIM guidelines** (OSH in Construction Industry Management) | Sets out the safety duties of client, designer and contractor across the project life cycle (verify the current edition) |\n| **DOSH Guidelines for HIRARC (2008)** | The standard HIRARC format: likelihood × severity matrix and hierarchy of control. This is the format the course will expect. |\n| Fire Services Act 1988 | Fire safety, extinguishers, emergency access |\n| Employees' Social Security Act 1969 (SOCSO / PERKESO) | Compensation for workplace injury, including for foreign workers (verify the current scheme) |\n\n**Sarawak notes:** OSHA and its regulations are federal law and apply fully in Sarawak. Some related laws differ. Electrical work comes under the **Electricity Ordinance (Sarawak)**, not the Electricity Supply Act 1990. Employment matters come under the **Sarawak Labour Ordinance**, not the Employment Act 1955. Ask the NIOSH Kuching lecturers if these are examined.\n\n## Exam memory aids\n\n**Numbers worth memorising** (confirm each one in class):\n\n| Number | Meaning |\n| --- | --- |\n| 1 June 2024 | OSHA amendment in force; FMA repealed |\n| 5 employees | OSH Coordinator required (s.29A) |\n| over 20 workers | BOWEC safety supervisor required |\n| 40 persons | Safety and Health Committee required (s.30) |\n| RM20 million | Construction contract value needing a full-time SHO |\n| RM500,000 / 2 years | Max penalty for employer/principal general duties (s.19) |\n| 3 months | S&H Committee meets at least this often |\n| more than 4 days | Medical leave that makes an injury reportable (NADOPOD) |\n| 7 days | Written JKKP 6 report deadline |\n| 1.5 m | Excavation depth needing support |\n| 40 m | Scaffold height needing PE design |\n| 82 / 85 dB(A) | Noise action level / exposure limit |\n\n**Essay answer structure (L-H-C-R):**\n\n1. **Law:** cite the section or regulation, e.g. \"Under OSHA s.15(2)(a)...\"\n2. **Hazard:** name the specific hazard and its consequence\n3. **Control:** follow the hierarchy: elimination → substitution → engineering → administrative → PPE\n4. **Responsibility:** who does it, e.g. principal, contractor, SSS, designated person or worker\n\n**Your trap as an experienced engineer:** answering from the \"get the job done\" angle. The marker wants legal compliance and the hierarchy of control, even when that's less practical on a real site.\n\n## Verify in class\n\nTick these off as the lecturers confirm them. Correct this sheet wherever their answer differs.\n\n- [ ] Is BOWEC 1986 still in force after the FMA repeal, and under which Act?\n- [ ] s.29A OSH Coordinator: exact threshold, and how it interacts with the SHO requirement\n- [ ] s.19 and s.51 penalty amounts after the 2022 amendment\n- [ ] s.26A conditions for an employee to remove themselves from danger\n- [ ] BOWEC reg. numbers: safety supervisor, scaffold, excavation limits\n- [ ] NADOPOD: JKKP 6 / 7 / 8 roles and record-keeping period\n- [ ] Plant requiring a CF under the 2024 regulations, and the renewal cycle\n- [ ] Exam format, and how and when to book the DOSH exam (first attempt within 3 years)\n\n## Sources\n\nSections marked NEW and the 1 June 2024 date were checked against these. Everything else is from general knowledge and labelled (verify).\n\n- [Factories and Machinery (Repeal) Act 2022, Act 835 (DOSH)](https://dosh.gov.my/wp-content/uploads/2024/10/Akta-Kilang-dan-Jentera-Pemansuhan-2022-Akta-835.pdf)\n- [Amendments to the OSHA 1994 (DNH)](https://dnh.com.my/amendments-to-the-occupational-safety-and-health-act-1994/)\n- [OSH (Amendment) Act 2022 in force 1 June 2024 (Malay Mail)](https://www.malaymail.com/news/malaysia/2024/04/04/human-resources-ministry-amended-occupational-safety-and-health-act-to-come-into-force-on-june-1/127335)\n- [FAQ on OSHA amendments (HCA Mag)](https://hcamag.com/asia/specialisation/employment-law/frequently-asked-questions-on-amendments-to-malaysia-occupational-safety-and-health-act/509203)\n", "hirarc": "# HIRARC: Bridge Embankment Earth Filling & Piling\n\n19 Oct 2026\n\nWorked HIRARC example in the DOSH 2008 format, prepared as SSS course practice.\n\n## Scope and assumptions\n\nThis HIRARC covers embankment earth filling at a bridge approach and piling for the abutment, on soft ground next to a river. Change the assumptions to match your real site.\n\n| Form header | Entry |\n| --- | --- |\n| Activity | (1) Earth filling for bridge approach embankment; (2) piling for bridge abutment |\n| Location | Bridge approach, chainage \\_\\_\\_ (riverside, soft alluvial ground) |\n| Conducted by | Site Safety Supervisor, with site engineer and piling subcontractor supervisor |\n| Approved by | Project Manager |\n| Date / review date | \\_\\_\\_ / review when method, plant or ground conditions change |\n\n**Assumptions:**\n\n- Fill is imported by tipper lorries over a site haul road joining a public road.\n- Fill is spread by bulldozer and compacted in layers by a vibratory roller.\n- Piles are **precast RC/spun piles driven by a hydraulic hammer rig**. This matches the actual site method.\n- Overhead power lines cross near the haul road, and the river is about 10 m from the abutment.\n\n## Rating scales (DOSH HIRARC Guidelines 2008)\n\nRisk = Likelihood (L) × Severity (S). Score 15–25 = **High**, 5–12 = **Medium**, 1–4 = **Low**.\n\n| Score | Likelihood | Severity |\n| --- | --- | --- |\n| 5 | Most likely: the most likely result if the hazard occurs | Catastrophic: many fatalities, major property damage |\n| 4 | Possible: has a good chance of occurring | Fatal: approximately one fatality, major injury causing permanent disability |\n| 3 | Conceivable: might occur at some time | Serious: non-fatal injury, permanent disability |\n| 2 | Remote: has not been known to occur after many years | Minor: disabling but not permanent injury |\n| 1 | Inconceivable: practically impossible | Negligible: minor abrasions, bruises, cuts |\n\n**Risk matrix** (H = High, M = Medium, L = Low):\n\n| L \\\\ S | 1 | 2 | 3 | 4 | 5 |\n| --- | --- | --- | --- | --- | --- |\n| **5** | 5 M | 10 M | 15 H | 20 H | 25 H |\n| **4** | 4 L | 8 M | 12 M | 16 H | 20 H |\n| **3** | 3 L | 6 M | 9 M | 12 M | 15 H |\n| **2** | 2 L | 4 L | 6 M | 8 M | 10 M |\n| **1** | 1 L | 2 L | 3 L | 4 L | 5 M |\n\n| Rating | Action |\n| --- | --- |\n| High | Stop or do not start until the risk is reduced. Immediate action and management attention. |\n| Medium | Plan and implement controls within a set time. Supervise closely. |\n| Low | Acceptable. Maintain existing controls and monitor. |\n\n**Hierarchy of control** (use in this order): elimination → substitution → engineering → administrative → PPE.\n\nWording varies slightly between course notes, so use NIOSH's version in the exam.\n\n## Work sequence\n\nHIRARC starts by breaking each activity into steps. Each step becomes a row group in the tables below.\n\n**A. Earth filling**\n\n1. Site clearing and topsoil stripping\n2. Haulage of fill by tipper lorry (public road and haul road)\n3. Tipping at the embankment\n4. Spreading by bulldozer and compaction by vibratory roller, layer by layer\n5. Field density testing\n6. Embankment slope trimming, near the river\n\n**B. Piling**\n\n1. Prepare the working platform and mobilise the piling rig\n2. Unload, stack and pitch piles\n3. Drive piles with the hydraulic hammer\n4. Weld pile joints\n5. Cut off pile heads\n6. Clean up, demobilise\n\n## A. HIRARC: Earth filling works\n\nThe highest risks are plant striking workers and plant overturning at the embankment edge or on soft ground. Ratings are examples. Rate your own site honestly.\n\n| No | Step | Hazard | Which can cause | Existing control | L | S | R | Additional control | Residual R | PIC |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| A1 | Clearing / stripping | Excavator slewing or tracking near workers | Struck by plant, crush, death | Operator competent | 3 | 4 | 12 M | Exclusion zone at slew radius; banksman; reversing alarm and camera; hi-vis vests | 2×4 = 8 M | Site supervisor |\n| A2 | Clearing / stripping | Underground services, buried debris | Electrocution, gas or water burst | Drawings reviewed | 2 | 4 | 8 M | Utility detection scan; trial pits by hand; permit to dig | 1×4 = 4 L | Site engineer |\n| A3 | Haulage | Tipper entering/leaving public road | Collision with public vehicles | Signage | 3 | 4 | 12 M | Traffic management plan; flagmen; speed limit; wheel wash; JKR-approved signage | 2×4 = 8 M | Traffic coordinator |\n| A4 | Haulage | Tipper reversing on haul road | Worker run over | Reversing alarm | 3 | 4 | 12 M | One-way haul road; banksman at tipping point; pedestrian segregation | 2×4 = 8 M | Site supervisor |\n| A5 | Haulage | Raised tipper body near overhead power lines | Electrocution, fire | Nil | 2 | 4 | 8 M | Goal-post height barriers; \"no tipping\" zone under lines; liaise with SEB for clearance | 1×4 = 4 L | Site engineer |\n| A6 | Tipping | Soft or unconsolidated edge of embankment | Tipper overturn, driver injury or death | Driver experience | 3 | 4 | 12 M | Tip back from edge; earth stop bund; tip on compacted layer only; banksman | 2×4 = 8 M | Site supervisor |\n| A7 | Spreading / compaction | Bulldozer or roller working at slope edge | Plant overturn, operator crushed | Operator competent | 2 | 4 | 8 M | ROPS and seatbelt worn; edge marking; no compaction close to edge without guidance | 1×4 = 4 L | Plant supervisor |\n| A8 | Spreading / compaction | Vibration and noise from roller | Hearing loss, whole-body vibration | Earplugs available | 4 | 2 | 8 M | Noise assessment (Noise Regs 2019); enforce hearing protection; job rotation; cab seat maintenance | 3×2 = 6 M | SSS |\n| A9 | Spreading / compaction | Dust in dry weather | Respiratory irritation, poor visibility leading to collision | Nil | 4 | 2 | 8 M | Water bowser on haul road; dust masks; reduce speed | 2×2 = 4 L | Site supervisor |\n| A10 | Density testing | Technician working inside the plant operating area | Struck by plant | Verbal communication | 3 | 4 | 12 M | Stop plant in test zone; cones and banksman; hi-vis; permit-to-work for test area | 1×4 = 4 L | Site engineer |\n| A11 | Whole embankment | Slope or foundation failure on soft ground (rapid fill rate) | Slip, burial, plant toppling | Fill in layers | 2 | 5 | 10 M | Fill rate per design; settlement and piezometer monitoring; geotechnical engineer approval for each stage | 1×5 = 5 M | Project engineer |\n| A12 | Slope trimming | Work near the river edge | Drowning | Nil | 2 | 4 | 8 M | Life jackets; lifebuoy with rope; no lone working; barrier at edge | 1×4 = 4 L | SSS |\n| A13 | All steps | Heat, long hours in the sun | Heat stress, fatigue | Drinking water | 3 | 3 | 9 M | Shaded rest area; rest breaks; buddy system; monitor workers on hot days | 2×3 = 6 M | Site supervisor |\n\n## B. HIRARC: Piling works\n\nThe single highest risk is **piling rig overturning** on a weak working platform beside the river (rated High). It must be controlled before work starts.\n\n| No | Step | Hazard | Which can cause | Existing control | L | S | R | Additional control | Residual R | PIC |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| B1 | Platform / mobilise | Rig on soft ground or weak working platform | **Rig overturn**, multiple fatalities | Platform levelled | 3 | 5 | **15 H** | Working platform designed and certified by engineer; bearing check; crane mats; inspect after rain; no work until signed off | 1×5 = 5 M | Project engineer |\n| B2 | Platform / mobilise | Rig assembly, leader raising | Falling parts, crush | Manufacturer's manual | 2 | 4 | 8 M | Rig CF valid; competent erector; exclusion zone during assembly | 1×4 = 4 L | Piling supervisor |\n| B3 | Unload / stack piles | Pile rolling off stack or lorry | Crush injury to legs or body | Timber packing | 3 | 4 | 12 M | Chocks/wedges on each tier; stack height limit; no one standing on lorry side during unloading | 2×4 = 8 M | Piling supervisor |\n| B4 | Pitch piles | Suspended load, sling failure, pile swinging | Struck by pile, crush, death | Slings used | 3 | 4 | 12 M | Lifting plan; slings inspected and tagged with SWL; tag lines; competent signaller; no one under load | 2×4 = 8 M | Lifting supervisor |\n| B5 | Pitch piles | Hands between pile and leader or helmet | Finger crush, amputation | Gloves | 3 | 3 | 9 M | Hands-off guiding with tag lines; pinch-point briefing in toolbox talk | 2×3 = 6 M | Piling supervisor |\n| B6 | Driving | Hammer noise above 85 dB(A) | Noise-induced hearing loss | Earplugs available | 5 | 2 | 10 M | Noise assessment; hearing protection zone signage; double protection near rig; audiometric testing | 3×2 = 6 M | SSS |\n| B7 | Driving | Pile head shattering, flying concrete | Eye or head injury | Helmet | 3 | 3 | 9 M | Pile cushion/packing replaced regularly; exclusion zone; safety glasses | 2×3 = 6 M | Piling supervisor |\n| B8 | Driving | Ground vibration | Damage to nearby structures, slope instability at river bank | Nil | 3 | 3 | 9 M | Pre-condition survey; vibration monitoring; limit values agreed with engineer | 2×3 = 6 M | Project engineer |\n| B9 | Driving | Unauthorised entry into rig area | Struck by rig or pile | Verbal warning | 3 | 4 | 12 M | Hard barricade beyond the rig's fall-over radius; signage; access only with supervisor permission | 1×4 = 4 L | SSS |\n| B10 | Welding joints | Hot work, fumes, electricity | Burns, fire, shock, fume inhalation | Welder experienced | 3 | 3 | 9 M | Hot work permit; fire extinguisher at point of work; earthed equipment and ELCB; welding screen and respirator | 2×3 = 6 M | Piling supervisor |\n| B11 | Welding joints | Working at height on pile or leader platform | Fall from height | Nil | 3 | 4 | 12 M | Weld at low level where possible; mobile elevating work platform or scaffold; full body harness with anchor point | 1×4 = 4 L | Piling supervisor |\n| B12 | Cut-off | Hand-held breaker and saw | Hand-arm vibration, flying chips, silica dust | Gloves | 4 | 2 | 8 M | Water suppression; dust mask (P2); goggles; job rotation; anti-vibration tools | 2×2 = 4 L | Site supervisor |\n| B13 | Cut-off | Exposed pile heads and starter bars | Trips, impalement | Nil | 3 | 3 | 9 M | Rebar caps on starter bars; barricade cut-off area; housekeeping | 2×3 = 6 M | Site supervisor |\n\n## Legal links and exam tips\n\nIn the exam, linking each control to a law turns a site answer into an SSS answer.\n\n| Control in the tables | Legal basis |\n| --- | --- |\n| Doing the HIRARC at all | OSHA s.18B (risk assessment); DOSH HIRARC Guidelines 2008 |\n| Piling subcontractor's safety | OSHA s.18A (principal's duty to contractors) |\n| Safe plant, systems of work, training | OSHA s.15 |\n| Public road traffic control | OSHA s.17 (persons other than employees) |\n| Workers wearing PPE, following rules | OSHA s.24 |\n| Rig and crane CF, competent operators | OSHA plant provisions and 2024 regulations (replacing FMA) |\n| Lifting, piling, excavation, scaffold or platform rules | BOWEC 1986 (verify current status) |\n| Hammer and roller noise | OSH (Noise Exposure) Regs 2019 |\n| Reporting an accident | OSHA s.32 + NADOPOD 2004 |\n\n**Tips for writing HIRARC in the exam:**\n\n1. **Hazard ≠ risk ≠ consequence.** Hazard = the source (\"suspended pile\"). Consequence = what happens (\"struck by pile\"). Don't write \"accident\" as a hazard.\n2. **Be specific.** Write \"tipper reversing at tipping point\", not \"vehicle movement\".\n3. **Controls follow the hierarchy.** Start with elimination or engineering. PPE alone is a weak answer.\n4. **Residual risk must drop.** Show the new L × S after controls. Severity usually stays the same; likelihood falls.\n5. **High risk = stop work.** State clearly that work doesn't start until a High risk is reduced (see B1).\n6. **Name a PIC for every control.** Markers check for accountability.\n\nTo adapt this for your own site, change the assumptions in Scope and re-rate L and S. Table B assumes driven piles, as on the actual site.\n", "practice": "# SSS Practice Questions\n\n19 Oct 2026\n\nPractice set for the NIOSH SSS course, built on the Law Cheat Sheet and the HIRARC worked example. Questions come first and answers at the end, so you can test yourself.\n\n## How to use\n\nDo it as a timed mock exam: about **2 hours**, closed notes, answers on paper. Mark yourself afterwards with the answer key.\n\n| Part | Type | Questions | Suggested time | Marks |\n| --- | --- | --- | --- | --- |\n| A | Objective (one best answer) | 20 | 25 min | 20 |\n| B | Short answer | 6 | 45 min | 30 |\n| C | Case / HIRARC essay | 2 | 50 min | 50 |\n\nThe real exam format may differ, so confirm it in class. Facts follow the Law Cheat Sheet. Items it marks (verify) are also uncertain here.\n\n## Part A: Objective questions (20 marks)\n\nChoose the one best answer.\n\n1. The OSH (Amendment) Act 2022 came into force on:\n   - A) 16 March 2022 · B) 1 January 2023 · C) 1 June 2024 · D) 1 January 2025\n2. Which OSHA section requires employers and principals to carry out a risk assessment?\n   - A) s.15 · B) s.18A · C) s.24 · D) s.18B\n3. A main contractor's duty for the safety of its subcontractors' workers comes mainly from:\n   - A) s.18A · B) s.20 · C) s.26 · D) s.29\n4. An employer must appoint an OSH Coordinator when it has at least:\n   - A) 3 employees · B) 5 employees · C) 20 employees · D) 40 employees\n5. A Safety and Health Committee is required when the workplace has:\n   - A) 20 or more persons · B) 30 or more persons · C) 40 or more persons · D) 100 or more persons\n6. A construction project requires a full-time registered SHO when its contract value exceeds:\n   - A) RM5 million · B) RM10 million · C) RM15 million · D) RM20 million\n7. A worker refuses to wear a safety helmet provided by the employer. The worker breaches:\n   - A) s.24 · B) s.15 · C) s.17 · D) s.32\n8. A contractor deducts the cost of safety boots from workers' wages. This breaches:\n   - A) s.25 · B) s.26 · C) s.27 · D) s.31\n9. The 2022 amendment gives employees the right to remove themselves from imminent danger under:\n   - A) s.24 · B) s.26A · C) s.29A · D) s.31A\n10. The maximum fine for an employer breaching general duties (s.15) is now:\n    - A) RM50,000 · B) RM100,000 · C) RM200,000 · D) RM500,000\n11. A DOSH officer orders a piling rig to stop work immediately because it is unstable. This is:\n    - A) A prohibition notice · B) An improvement notice · C) A compound · D) A stop-work order from CIDB\n12. Under NADOPOD 2004, a non-fatal injury becomes reportable when the worker is unable to work for:\n    - A) More than 1 day · B) More than 2 days · C) More than 4 calendar days · D) More than 7 days\n13. The written accident report to DOSH uses form:\n    - A) JKKP 6 · B) JKKP 7 · C) JKKP 8 · D) PERKESO 34\n14. Under the Noise Exposure Regulations 2019, the 8-hour exposure limit is:\n    - A) 80 dB(A) · B) 82 dB(A) · C) 85 dB(A) · D) 90 dB(A)\n15. The assessment required under USECHH 2000 for hazardous chemicals is:\n    - A) HIRARC · B) JSA · C) EIA · D) CHRA\n16. Under CLASS Regulations 2013, a supplier of hazardous chemicals must provide:\n    - A) A Safety Data Sheet · B) A certificate of fitness · C) A method statement · D) A permit to work\n17. In the hierarchy of control, the **most** effective control is:\n    - A) PPE · B) Administrative control · C) Engineering control · D) Elimination\n18. Using the DOSH 2008 matrix, a hazard rated Likelihood 3 and Severity 5 gives:\n    - A) 8, Medium · B) 15, High · C) 15, Medium · D) 12, Medium\n19. Under BOWEC 1986, a contractor must appoint a safety supervisor when employing:\n    - A) More than 20 workers · B) More than 10 workers · C) More than 50 workers · D) Any number of workers\n20. Company directors can be personally liable for the company's OSHA offence under:\n    - A) s.48 · B) s.52 · C) s.37 · D) s.66\n\n## Part B: Short-answer questions (30 marks, 5 each)\n\n1. List **five** general duties of an employer under OSHA s.15(2).\n2. Explain the difference between **hazard** and **risk**, with one example from embankment earth filling.\n3. Compare an **improvement notice** and a **prohibition notice**: who issues each, when, and what the contractor must do.\n4. State **five** key changes brought by the OSH (Amendment) Act 2022.\n5. Using the hierarchy of control, propose **one control at each level** for noise from a hydraulic piling hammer.\n6. List **six** duties of a Site Safety Supervisor on a construction site.\n\n## Part C: Case questions (50 marks, 25 each)\n\n**C1. Tipper overturn at bridge embankment**\n\nAt 4.30 pm after heavy rain, a tipper lorry reversed to the edge of a bridge approach embankment to tip fill. The edge gave way and the lorry rolled down the slope. The driver suffered a fractured arm and was hospitalised, then given **14 days' medical leave**. No banksman was present. The main contractor had subcontracted earthworks to a local company.\n\n1. Is this accident reportable to DOSH? Explain how and when it must be reported. (5 marks)\n2. Identify **four** possible causes, covering both unsafe acts and unsafe conditions. (8 marks)\n3. Describe the steps of the accident investigation the SSS should carry out. (6 marks)\n4. Recommend controls to prevent recurrence, and state who is legally responsible, citing OSHA. (6 marks)\n\n**C2. HIRARC for lifting and pitching precast piles**\n\nA piling rig is lifting 12 m precast RC piles from a stack and pitching them into the leader for driving. The site is on soft ground, 10 m from a river.\n\n1. Identify **four** hazards in this activity, each with its possible consequence. (8 marks)\n2. Rate each hazard using the DOSH 2008 L × S matrix. (6 marks)\n3. Propose controls for each hazard following the hierarchy of control, and show the residual risk. (8 marks)\n4. State the legal basis for carrying out this HIRARC. (3 marks)\n\n## Answer key: Part A\n\n| Q | Answer | Why |\n| --- | --- | --- |\n| 1 | C | Act A1648 and the FMA repeal (Act 835) both took effect 1 June 2024 |\n| 2 | D | s.18B risk assessment (new, 2022) |\n| 3 | A | s.18A duties of principals (new, 2022) |\n| 4 | B | s.29A OSH Coordinator: 5 or more employees (verify) |\n| 5 | C | s.30 + S&H Committee Regs 1996: 40 or more persons |\n| 6 | D | SHO Order 1997: building operations over RM20 million |\n| 7 | A | s.24 employee must wear PPE provided |\n| 8 | B | s.26 no charge to employees for safety measures |\n| 9 | B | s.26A right to remove oneself from imminent danger |\n| 10 | D | s.19 now up to RM500,000 and/or 2 years (verify) |\n| 11 | A | s.48 prohibition notice stops the activity immediately |\n| 12 | C | NADOPOD 2004: more than 4 calendar days unable to work |\n| 13 | A | JKKP 6 accident and dangerous occurrence report |\n| 14 | C | 85 dB(A) 8-hour TWA (82 = action level) |\n| 15 | D | Chemical Health Risk Assessment |\n| 16 | A | Safety Data Sheet (plus GHS label) |\n| 17 | D | Elimination removes the hazard completely |\n| 18 | B | 3 × 5 = 15, which falls in the 15–25 High band |\n| 19 | A | BOWEC reg. 25: more than 20 workers (verify) |\n| 20 | B | s.52 offences by body corporate |\n\n**Score guide:** 16 or more = ready; 12–15 = revise the missed sections; under 12 = re-read the cheat sheet first.\n\n## Model answers: Part B\n\n**B1. Employer's general duties, s.15(2)** (any five, \"so far as is practicable\")\n\n- (a) Provide and maintain plant and systems of work that are safe and without risks to health\n- (b) Arrangements for safe use, operation, handling, storage and transport of plant and substances\n- (c) Information, instruction, training and supervision\n- (d) Maintain the place of work in a safe condition, with safe access and exit\n- (e) Safe working environment with adequate welfare facilities\n- (f) Develop and implement procedures for emergencies (new, 2022)\n\n**B2. Hazard vs risk**\n\n- **Hazard** = a source or situation with potential to cause harm.\n- **Risk** = the combination of how likely the harm is and how severe it would be (L × S).\n- Example: the soft, unconsolidated edge of the embankment is the **hazard**. The **risk** is the chance a tipper overturns there × the severity (driver death). Rated L3 × S4 = 12, Medium.\n\n**B3. Improvement vs prohibition notice** (both issued by a DOSH officer under s.48)\n\n| | Improvement notice | Prohibition notice |\n| --- | --- | --- |\n| When | A contravention of OSHA or its regulations exists | An activity involves a risk of serious bodily injury |\n| Effect | Work may continue; remedy within the stated period | Activity must stop until the risk is remedied |\n| Site example | Scaffold inspection records not kept | Piling rig on an unstable platform |\n| If ignored | Offence under s.49 | Offence under s.49 |\n| Challenge | Appeal under s.50 (verify period) | Appeal under s.50; the notice stays in force meanwhile (verify) |\n\n**B4. Key changes in the 2022 amendment** (any five)\n\n- Covers all places of work (except armed forces and ships)\n- s.18A: duties of principals toward contractors and subcontractors\n- s.18B: mandatory risk assessment\n- s.26A: employee's right to remove themselves from imminent danger\n- s.29A: OSH Coordinator for 5 or more employees\n- s.15(2)(f): emergency procedures\n- s.31A: mandatory training for specified employees\n- Penalties raised, e.g. s.19 up to RM500,000\n- FMA 1967 repealed; plant now regulated under OSHA\n\n**B5. Piling hammer noise, hierarchy of control**\n\n| Level | Control |\n| --- | --- |\n| Elimination | Choose a non-impact method, e.g. jacked-in or bored piles, at design stage |\n| Substitution | Quieter hammer or a low-noise hydraulic hammer model |\n| Engineering | Hammer shroud or acoustic enclosure; noise barriers; well-maintained pile cushion |\n| Administrative | Noise risk assessment; restricted working hours; job rotation; signage at hearing protection zone; audiometric testing |\n| PPE | Earmuffs or earplugs with enough attenuation; double protection near the rig |\n\n**B6. Duties of a Site Safety Supervisor** (any six)\n\n- Inspect the site daily and record unsafe acts and conditions\n- Run safety induction and toolbox talks\n- Take part in HIRARC and check that controls are in place\n- Check permits to work: hot work, lifting, confined space, excavation\n- Ensure scaffolds, lifting gear and plant are inspected and certified\n- Enforce PPE use\n- Investigate and report accidents and near misses (NADOPOD)\n- Keep safety records and attend S&H Committee meetings\n- Advise the contractor on legal compliance and coordinate emergency response\n\n## Model answers: Part C\n\n### C1. Tipper overturn\n\n**(a) Reportable? Yes.** A fracture is a serious bodily injury, and 14 days' leave exceeds the 4-day threshold (NADOPOD 2004, under OSHA s.32).\n\n- The employer (the earthworks subcontractor) notifies the nearest DOSH office **immediately** by the quickest means.\n- Then submits the written report, **JKKP 6**, within **7 days** (online).\n- The main contractor, as principal (s.18A), ensures this is done and keeps a copy in the site accident register.\n\n**(b) Possible causes**\n\n| Type | Cause |\n| --- | --- |\n| Unsafe act | Reversed and tipped too close to the edge |\n| Unsafe act | Tipping without a banksman |\n| Unsafe condition | Edge softened by heavy rain and not re-inspected |\n| Unsafe condition | No earth stop bund or edge marking |\n| Management / root cause | No HIRARC or traffic plan for tipping; poor supervision of the subcontractor; end-of-day time pressure |\n\n**(c) Investigation steps**\n\n1. Make the area safe and give first aid; stop tipping at that location.\n2. Preserve the scene: barricade it, take photos and measurements.\n3. Notify DOSH (see a).\n4. Gather evidence: statements from the driver and witnesses; the HIRARC, toolbox talk and inspection records; weather records; vehicle condition.\n5. Analyse the root cause, e.g. using 5 Whys or a fishbone diagram.\n6. Recommend corrective actions with a PIC and deadline for each.\n7. Report to management and the S&H Committee; share lessons in toolbox talks; follow up until all actions are closed.\n\n**(d) Controls and legal responsibility**\n\n- Engineering: earth stop bund at the tipping point; tip back from the edge and push fill over by dozer.\n- Administrative: banksman mandatory at tipping; edge inspection by the supervisor after rain, with tipping suspended until it's cleared; update HIRARC and the traffic management plan; toolbox talk to all drivers.\n- **Responsibility:** the subcontractor as employer (s.15) and the main contractor as principal (s.18A) for safe systems of work; both must assess risk (s.18B). The driver also has a duty under s.24.\n\n### C2. HIRARC: lifting and pitching precast piles\n\n| Hazard | Consequence | L | S | R | Controls (by hierarchy) | Residual |\n| --- | --- | --- | --- | --- | --- | --- |\n| Rig on soft ground near river | Rig overturn, multiple fatalities | 3 | 5 | **15 H** | Engineering: designed and certified working platform, crane mats. Administrative: bearing check, inspect after rain, no work until signed off. | 1×5 = 5 M |\n| Suspended pile, sling failure or swing | Struck by pile, death | 3 | 4 | 12 M | Engineering: slings rated and tagged with SWL. Administrative: lifting plan, competent signaller, tag lines, no one under load. | 2×4 = 8 M |\n| Pile rolling off stack | Crush injury | 3 | 4 | 12 M | Engineering: chocks/wedges on each tier. Administrative: stack height limit, no access beside stack during lifting. | 2×4 = 8 M |\n| Hands between pile and leader | Finger crush, amputation | 3 | 3 | 9 M | Administrative: hands-off guiding with tag lines, pinch-point toolbox talk. PPE: gloves. | 2×3 = 6 M |\n\n**Legal basis:** OSHA **s.18B** requires a risk assessment. s.15(2)(a) requires safe systems of work. The method follows the **DOSH Guidelines for HIRARC 2008**. Because the first hazard is rated High, **work must not start** until the platform controls are in place.\n"}</script>
+<script>
+(function(){
+  var NOTES = JSON.parse(document.getElementById('notes-data').textContent);
+  var store = {
+    get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},
+    set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}
+  };
+  var doc = document.getElementById('doc'), rail = document.getElementById('rail'), jump = document.getElementById('jumpsel');
+
+  function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,60)}
+
+  function enhanceTables(){
+    doc.querySelectorAll('table').forEach(function(t){
+      var box = document.createElement('div'); box.className = 'tbl';
+      var heads = Array.prototype.map.call(t.querySelectorAll('thead th'), function(th){return th.textContent.trim()});
+      if (heads.length >= 6) box.className += ' wide';
+      t.parentNode.insertBefore(box, t); box.appendChild(t);
+      t.querySelectorAll('tbody tr').forEach(function(tr){
+        Array.prototype.forEach.call(tr.children, function(td, i){
+          td.setAttribute('data-label', heads[i] || '');
+          var txt = td.textContent.trim();
+          var m = txt.match(/^(?:\d\s*[×x]\s*\d\s*=\s*)?\d{1,2}\s*([HML])$/);
+          if (m && txt.length <= 14) td.innerHTML = '<span class="chip r-' + m[1] + '">' + txt + '</span>';
+        });
+      });
+    });
+  }
+
+  function wrapAnswers(){
+    var hs = Array.prototype.slice.call(doc.querySelectorAll('h2'));
+    hs.forEach(function(h){
+      if (!/^(Answer key|Model answers)/i.test(h.textContent)) return;
+      var d = document.createElement('details'); d.className = 'ans'; d.id = h.id;
+      var s = document.createElement('summary'); s.textContent = h.textContent; d.appendChild(s);
+      var body = document.createElement('div'); body.className = 'ans-body'; d.appendChild(body);
+      h.removeAttribute('id');
+      h.parentNode.insertBefore(d, h);
+      var n = h.nextSibling;
+      body.appendChild(h);
+      while (n && !(n.nodeType === 1 && n.tagName === 'H2')) { var next = n.nextSibling; body.appendChild(n); n = next; }
+    });
+  }
+
+  function enableChecklists(key){
+    doc.querySelectorAll('input[type=checkbox]').forEach(function(cb, i){
+      cb.disabled = false; cb.id = 'chk-' + key + '-' + i;
+      cb.checked = store.get(cb.id) === '1';
+      cb.addEventListener('change', function(){store.set(cb.id, cb.checked ? '1' : '0')});
+    });
+  }
+
+  function buildIndex(){
+    rail.innerHTML = ''; jump.innerHTML = '<option value="">Choose a section…</option>';
+    doc.querySelectorAll('h2, details.ans').forEach(function(h){
+      var text = h.tagName === 'DETAILS' ? h.querySelector('summary').textContent : h.textContent;
+      if (!h.id) h.id = slug(text);
+      var a = document.createElement('a'); a.href = '#' + h.id; a.textContent = text;
+      a.addEventListener('click', function(e){e.preventDefault(); go(h)});
+      rail.appendChild(a);
+      var o = document.createElement('option'); o.value = h.id; o.textContent = text; jump.appendChild(o);
+    });
+  }
+  function go(el){
+    if (el.tagName === 'DETAILS') el.open = true;
+    el.scrollIntoView({block:'start'});
+  }
+  jump.addEventListener('change', function(){
+    var el = document.getElementById(jump.value); if (el) go(el); jump.value = '';
+  });
+
+  function show(key){
+    if (!NOTES[key]) key = 'law';
+    document.querySelectorAll('.tab').forEach(function(t){t.setAttribute('aria-selected', t.dataset.note === key ? 'true' : 'false')});
+    if (window.marked) {
+      doc.innerHTML = marked.parse(NOTES[key], {gfm:true});
+    } else {
+      doc.innerHTML = '<pre style="white-space:pre-wrap">' + NOTES[key].replace(/[&<]/g, function(c){return c === '&' ? '&amp;' : '&lt;'}) + '</pre>';
+    }
+    doc.querySelectorAll('h2,h3').forEach(function(h){ if(!h.id) h.id = slug(h.textContent) });
+    enhanceTables(); wrapAnswers(); enableChecklists(key); buildIndex();
+    store.set('sss-tab', key);
+    if (location.hash !== '#' + key) { try { history.replaceState(null, '', '#' + key) } catch(e) {} }
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.tab').forEach(function(t){ t.addEventListener('click', function(){show(t.dataset.note)}) });
+
+  // Text size
+  var fs = parseInt(store.get('sss-fs') || '16', 10);
+  function setFs(v){ fs = Math.max(13, Math.min(22, v)); document.documentElement.style.setProperty('--fs', fs + 'px'); store.set('sss-fs', String(fs)) }
+  setFs(fs);
+  document.getElementById('smaller').addEventListener('click', function(){setFs(fs - 1)});
+  document.getElementById('bigger').addEventListener('click', function(){setFs(fs + 1)});
+
+  // Full screen, with a focus-mode fallback where the browser refuses it
+  var root = document.documentElement, lbl = document.getElementById('fslbl');
+  function isFs(){ return !!(document.fullscreenElement || document.webkitFullscreenElement) }
+  function setFocus(on){ document.body.classList.toggle('focus', on) }
+  function refresh(){ lbl.textContent = (isFs() || document.body.classList.contains('focus')) ? 'Exit full screen' : 'Full screen' }
+  document.getElementById('fs').addEventListener('click', function(){
+    if (isFs()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); return }
+    var req = root.requestFullscreen || root.webkitRequestFullscreen;
+    if (!req) { setFocus(true); refresh(); return }
+    try {
+      var p = req.call(root);
+      if (p && p.catch) p.catch(function(){ setFocus(true); refresh() });
+    } catch (e) { setFocus(true); refresh() }
+  });
+  document.getElementById('exitfocus').addEventListener('click', function(){ setFocus(false); refresh() });
+  document.addEventListener('fullscreenchange', refresh);
+  document.addEventListener('webkitfullscreenchange', refresh);
+
+  window.addEventListener('hashchange', function(){
+    var k = (location.hash || '').slice(1);
+    if (NOTES[k] && store.get('sss-tab') !== k) show(k);
+  });
+  var start = (location.hash || '').slice(1);
+  show(NOTES[start] ? start : (store.get('sss-tab') || 'law'));
+})();
+</script>
+
+</body>
+</html>

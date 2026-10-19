@@ -8,6 +8,8 @@ Personal study notes for the **NIOSH Site Safety Supervisor (SSS)** course, NIOS
 | [02-hirarc-bridge-embankment.md](02-hirarc-bridge-embankment.md) | Worked HIRARC (DOSH 2008 format): earth filling and driven piling for a bridge embankment |
 | [03-practice-questions.md](03-practice-questions.md) | Mock exam: 20 objective, 6 short-answer, 2 case questions, with answers |
 
+**Study viewer:** `index.html` shows all three notes in one page that fits phone, tablet and desktop, with tabs, a section menu, text size buttons and a full-screen button. Download it and open it in any browser. After editing a `.md` file, run `python build.py` to rebuild it.
+
 Items marked **(verify)** are not yet confirmed against official sources or course notes. Tick them off during the course.
 
 Prepared 19 Oct 2026.
