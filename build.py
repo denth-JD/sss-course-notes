@@ -10,6 +10,7 @@ NOTES = {
     "law": "01-law-cheat-sheet.md",
     "hirarc": "02-hirarc-bridge-embankment.md",
     "practice": "03-practice-questions.md",
+    "exam": "04-exam-focus.md",
 }
 
 data = {key: (HERE / name).read_text(encoding="utf-8") for key, name in NOTES.items()}

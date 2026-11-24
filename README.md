@@ -7,8 +7,9 @@ Personal study notes for the **NIOSH Site Safety Supervisor (SSS)** course, NIOS
 | [01-law-cheat-sheet.md](01-law-cheat-sheet.md) | OSHA 1994 (as amended 2022), BOWEC 1986, key regulations, numbers to memorise |
 | [02-hirarc-bridge-embankment.md](02-hirarc-bridge-embankment.md) | Worked HIRARC (DOSH 2008 format): earth filling and driven piling for a bridge embankment |
 | [03-practice-questions.md](03-practice-questions.md) | Mock exam: 20 objective, 6 short-answer, 2 case questions, with answers |
+| [04-exam-focus.md](04-exam-focus.md) | Topics flagged in class as likely exam questions (soil weight, CDM 2024), added to as the course goes |
 
-**Study viewer:** `index.html` shows all three notes in one page that fits phone, tablet and desktop, with tabs, a section menu, text size buttons and a full-screen button. Download it and open it in any browser. After editing a `.md` file, run `python build.py` to rebuild it.
+**Study viewer:** `index.html` shows all four notes in one page that fits phone, tablet and desktop, with tabs, a section menu, text size buttons and a full-screen button. Download it and open it in any browser. After editing a `.md` file, run `python build.py` to rebuild it.
 
 Items marked **(verify)** are not yet confirmed against official sources or course notes. Tick them off during the course.
 
