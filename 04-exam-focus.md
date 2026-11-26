@@ -8,6 +8,7 @@
 | --- | --- | --- | --- |
 | 1 | Weight of 1 m³ of soil, in tonnes | Day 2 | Notes below |
 | 2 | CDM Regulations 2024 (heavy focus) | Day 2 | Notes below |
+| 3 | The 5 Acts administered by DOSH | Day 4 | Notes below |
 
 ## 1. How much does 1 m³ of soil weigh?
 
@@ -30,6 +31,24 @@ Engineering check: soil bulk unit weight is usually 16–20 kN/m³. Divide by 9.
 - Provide safe access (a ladder at least every 7.5 m along the trench is commonly taught, verify), edge barriers, and daily inspection by a competent person before each shift and after rain.
 
 Ask in class which figure the lecturer uses: 1.5 t or 2 t. Write it here: ______
+
+## 3. The 5 Acts administered by DOSH
+
+| # | Act | Act No. | Note |
+| --- | --- | --- | --- |
+| 1 | Occupational Safety and Health Act 1994 | **Act 514** | The main Act |
+| 2 | Occupational Safety and Health (Amendment) Act 2022 | **Act A1648** | Amends OSHA, in force 1 June 2024 |
+| 3 | Factories and Machinery Act 1967 | **Act 139** | Repealed 1 June 2024. Certificates issued under it still carry over |
+| 4 | Factories and Machinery (Repeal) Act 2022 | **Act 835** | Repeals the FMA, in force 1 June 2024 |
+| 5 | Petroleum (Safety Measures) Act 1984 | **Act 302** | Safe transport, storage and use of petroleum |
+
+The DOSH legislation page lists these. Older notes say "3 Acts" (OSHA, FMA, PSMA). The 5-Act answer adds the two 2022 Acts.
+
+Memory aid: **514 · A1648 · 139 · 835 · 302**.
+
+Ask in class whether the lecturer counts Act 139 (repealed) as one of the five. Write the answer here: ______
+
+Sources: [DOSH, Acts page](https://dosh.gov.my/en/perundangan/akta/) · [UTM compliance page](https://ppmu.utm.my/cmu/legislation/)
 
 ## 2. CDM Regulations 2024
 
